@@ -6,6 +6,7 @@ import { useRouter } from "next/router";
 import Navbar from "@/components/common/Navbar";
 import Footer from "@/components/common/Footer";
 import AdminLayout from "@/layout/AdminLayout";
+import AuthBootstrap from "@/components/common/AuthBootstrap";
 import "@/styles/globals.css";
 
 export default function App({ Component, pageProps }: AppProps) {
@@ -15,6 +16,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
+        <AuthBootstrap />
         {isAdminRoute ? (
           <AdminLayout>
             <Component {...pageProps} />

@@ -7,6 +7,7 @@ import { signIn } from "@/store/slices/authSlice";
 import { setUser } from "@/store/slices/userSlice";
 import { useRouter } from "next/router";
 import { API_ROUTES } from "@/api/APIRoutes";
+import apiClient from "@/api/apiClient";
 
 const SignIn = () => {
   const [formData, setFormData] = useState({
@@ -100,12 +101,8 @@ const SignIn = () => {
       setSuccess(false);
 
       try {
-        const res = await fetch(`${API_ROUTES.AUTH.LOGIN}`, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify(formData),
-        });
-        const data = await res.json();
+        const res = await apiClient.post(API_ROUTES.AUTH.LOGIN, formData);
+        const data = res.data;
 
         if (data.success) {
           dispatch(
@@ -133,13 +130,24 @@ const SignIn = () => {
           setErrors({ general: "Invalid credentials" });
         }
       } catch (err: unknown) {
-        setErrors({ general: "Something went wrong. Please try again." });
+        const message =
+          (err as { response?: { data?: { message?: string } } })?.response
+            ?.data?.message || "Something went wrong. Please try again.";
+        setErrors({ general: message });
         console.error("Login error:", err);
       } finally {
         setIsSubmitting(false);
       }
     }
   };
+
+  const sessionNotice = router.query.sessionExpired
+    ? "Your session expired. Please sign in again."
+    : router.query.unauthorized
+    ? "You don't have access to that page. Please sign in with an admin account."
+    : router.query.redirect === "admin"
+    ? "Please sign in to access the admin dashboard."
+    : null;
 
   return (
     <div
@@ -188,6 +196,17 @@ const SignIn = () => {
                 Sign in to your Perfect Meraki account
               </p>
             </div>
+
+            {sessionNotice && !success && (
+              <motion.div
+                initial={{ opacity: 0, y: -8 }}
+                animate={{ opacity: 1, y: 0 }}
+                className="mb-6 p-3 rounded-xl bg-amber-50 border border-amber-200 text-amber-800 text-sm text-center"
+                role="status"
+              >
+                {sessionNotice}
+              </motion.div>
+            )}
 
             {success ? (
               <motion.div

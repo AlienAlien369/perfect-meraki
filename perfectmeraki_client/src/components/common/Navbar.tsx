@@ -5,6 +5,9 @@ import { useRouter } from "next/router";
 import { useSelector, useDispatch } from "react-redux";
 import perfectmeraki_logo from "../../../public/assets/images/perfectmeraki_logo.jpg";
 import { AnimatedRevealButton } from "./AnimatedRevealButton";
+import { signOut } from "@/store/slices/authSlice";
+import { clearUser } from "@/store/slices/userSlice";
+import { useAuthHydrated } from "@/store/useAuthHydrated";
 
 // 1️⃣  Static links
 const navLinks = [
@@ -35,14 +38,23 @@ export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
   const router = useRouter();
   const dispatch = useDispatch();
+  const hydrated = useAuthHydrated();
 
   // 4️⃣  Auth state
   const { isAuthenticated, userDetails } = useSelector(
     (state: RootState) => state.auth
   );
 
+  // Until redux-persist has rehydrated, we don't yet know if this visitor is
+  // signed in — hide every auth-dependent link rather than guess and flash
+  // the wrong state (see store/useAuthHydrated.ts).
+  const showAuthState = hydrated;
+
   // 5️⃣  Filter links
   const filteredLinks = navLinks.filter((l) => {
+    const isAuthLink = l.name === "Sign In" || l.name === "Sign Up" || l.name === "Admin";
+    if (!isAuthLink) return true;
+    if (!showAuthState) return false;
     if (!isAuthenticated && l.name === "Admin") return false;
     if (isAuthenticated) {
       if (l.name === "Sign In" || l.name === "Sign Up") return false;
@@ -50,6 +62,12 @@ export default function Navbar() {
     }
     return true;
   });
+
+  const handleLogout = () => {
+    dispatch(signOut());
+    dispatch(clearUser());
+    router.push("/signin");
+  };
 
   // 6️⃣  Navigation helper
   const navigate = (href: string) => {
@@ -94,21 +112,19 @@ export default function Navbar() {
                   </span>
                 </button>
               ))}
-              {isAuthenticated && userDetails?.name && (
+              {!showAuthState && (
+                <span
+                  className="w-24 h-4 rounded bg-[#e0d6c5]/50 animate-pulse"
+                  aria-hidden="true"
+                />
+              )}
+              {showAuthState && isAuthenticated && userDetails?.name && (
                 <>
-                  <span className="text-sm text-[#2d2926]">
+                  <span className="text-sm text-[#2d2926] transition-opacity duration-300">
                     Hi {userDetails.name}
                   </span>
                   <button
-                    onClick={() => {
-                      dispatch({ type: "LOGOUT" });
-                      if (typeof window !== "undefined") {
-                        window.localStorage.clear();
-                        window.sessionStorage.clear();
-                        window.location.reload();
-                      }
-                      router.push("/signin");
-                    }}
+                    onClick={handleLogout}
                     className="ml-3 px-3 py-1 rounded bg-[#e0d6c5] text-[#2d2926] text-xs hover:bg-[#63ccbb] hover:text-white transition"
                   >
                     Log out
@@ -177,8 +193,16 @@ export default function Navbar() {
               </button>
             ))}
 
-            {isAuthenticated && userDetails?.name && (
-              <span className="text-sm">Hi {userDetails.name}</span>
+            {showAuthState && isAuthenticated && userDetails?.name && (
+              <>
+                <span className="text-sm">Hi {userDetails.name}</span>
+                <button
+                  onClick={handleLogout}
+                  className="px-4 py-1.5 rounded bg-[#e0d6c5] text-[#2d2926] text-sm hover:bg-[#63ccbb] hover:text-white transition"
+                >
+                  Log out
+                </button>
+              </>
             )}
 
             <button
