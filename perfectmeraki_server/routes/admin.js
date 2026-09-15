@@ -48,28 +48,19 @@ router.post(
   },
   createProduct
 );
-router.post(
-  "/getProductsByType",
-  protect,
-  authorize("admin", "user"),
-  getProductsByType
-);
+// Public read-only browsing endpoints — no auth required, these power the storefront
+router.post("/getProductsByType", getProductsByType);
+router.get("/getLinksByName", getLinksByName);
+router.get("/getWorkshopByType", getWorkshopByType);
 
 router.delete("/deleteProduct/:id", protect, authorize("admin"), deleteProduct);
 router.put("/editProduct/:id", protect, authorize("admin"), editProduct);
-router.get("/getLinksByName", protect, authorize("admin"), getLinksByName);
 router.post("/createLinks", protect, authorize("admin"), createLinks);
 router.put(
   "/updateLinksByName",
   protect,
   authorize("admin"),
   updateLinksByName
-);
-router.get(
-  "/getWorkshopByType",
-  protect,
-  authorize("admin", "user"),
-  getWorkshopByType
 );
 router.post(
   "/createWorkshop",
