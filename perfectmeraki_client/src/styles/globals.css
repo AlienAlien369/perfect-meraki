@@ -3,10 +3,11 @@
 /*
   Design tokens for Perfect Meraki.
 
-  Brand: espresso (near-black), teal (accent), sand (warm neutral) - craft &
-  warmth, handmade positioning. Two fonts only: Fraunces (display, warm serif
-  with real character) paired with Inter (text, neutral and highly legible)
-  so the serif reads as intentional rather than decorative.
+  Brand: espresso (near-black text), green (primary/accent), sand (warm
+  neutral) - craft & warmth, handmade positioning. Two fonts only: Fraunces
+  (display, warm serif with real character) paired with Inter (text, neutral
+  and highly legible) so the serif reads as intentional rather than
+  decorative.
 
   --font-display / --font-body are set as CSS variables by next/font in
   _app.tsx; declaring them here just wires them into Tailwind's theme so
@@ -14,8 +15,9 @@
 */
 @theme {
   --color-espresso: #2d2926;
-  --color-teal: #63ccbb;
-  --color-teal-dark: #4aa896;
+  --color-green: #227a53;
+  --color-green-dark: #175c3e;
+  --color-green-light: #eaf5ee;
   --color-sand: #e0d6c5;
   --color-sand-light: #f3ede1;
 
@@ -39,13 +41,13 @@
     @apply font-display;
   }
   ::selection {
-    background-color: var(--color-teal);
+    background-color: var(--color-green);
     color: white;
   }
   /* Visible, brand-colored focus ring everywhere - never remove outline
      without a replacement (keyboard nav must stay legible). */
   :focus-visible {
-    outline: 2px solid var(--color-teal-dark);
+    outline: 2px solid var(--color-green-dark);
     outline-offset: 2px;
   }
 }

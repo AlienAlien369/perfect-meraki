@@ -122,7 +122,7 @@ const SignIn = () => {
               initial="hidden"
               animate="visible"
               variants={fadeIn}
-              className="text-center p-6 rounded-xl bg-teal/10 border border-teal/30"
+              className="text-center p-6 rounded-xl bg-green/10 border border-green/30"
               role="status"
             >
               <h3 className="font-display text-xl text-espresso mb-1">
@@ -154,7 +154,7 @@ const SignIn = () => {
                     className={`w-full px-4 py-3 rounded-xl border bg-white text-espresso transition-colors duration-fast ${
                       errors.email
                         ? "border-red-300 focus:border-red-400"
-                        : "border-sand focus:border-teal"
+                        : "border-sand focus:border-green"
                     } focus:outline-none`}
                     placeholder="your@email.com"
                   />
@@ -184,7 +184,7 @@ const SignIn = () => {
                     className={`w-full px-4 py-3 rounded-xl border bg-white text-espresso transition-colors duration-fast ${
                       errors.password
                         ? "border-red-300 focus:border-red-400"
-                        : "border-sand focus:border-teal"
+                        : "border-sand focus:border-green"
                     } focus:outline-none`}
                     placeholder="••••••••"
                   />
@@ -206,8 +206,8 @@ const SignIn = () => {
                   disabled={isSubmitting}
                   className={`w-full py-3 px-4 rounded-xl font-semibold text-white transition-all duration-base ${
                     isSubmitting
-                      ? "bg-teal/60 cursor-not-allowed"
-                      : "bg-espresso hover:bg-teal-dark"
+                      ? "bg-green/60 cursor-not-allowed"
+                      : "bg-espresso hover:bg-green-dark"
                   }`}
                 >
                   {isSubmitting ? "Signing in..." : "Sign in"}
@@ -218,7 +218,7 @@ const SignIn = () => {
 
           <p className="mt-6 text-center text-sm text-espresso/70">
             Don&apos;t have an account?{" "}
-            <Link href="/signup" className="font-medium text-teal-dark hover:underline">
+            <Link href="/signup" className="font-medium text-green-dark hover:underline">
               Sign up
             </Link>
           </p>

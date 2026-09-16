@@ -84,7 +84,7 @@ const SignUp = () => {
               initial="hidden"
               animate="visible"
               variants={fadeIn}
-              className="text-center p-6 rounded-xl bg-teal/10 border border-teal/30"
+              className="text-center p-6 rounded-xl bg-green/10 border border-green/30"
               role="status"
             >
               <h3 className="font-display text-xl text-espresso mb-1">
@@ -95,7 +95,7 @@ const SignUp = () => {
               </p>
               <button
                 onClick={() => router.push("/signin")}
-                className="px-6 py-2 bg-espresso text-white rounded-full font-medium hover:bg-teal-dark transition-colors duration-base"
+                className="px-6 py-2 bg-espresso text-white rounded-full font-medium hover:bg-green-dark transition-colors duration-base"
               >
                 Go to sign in
               </button>
@@ -116,7 +116,7 @@ const SignUp = () => {
                     onChange={handleChange}
                     aria-invalid={!!errors.name}
                     className={`w-full px-4 py-3 rounded-xl border bg-white text-espresso transition-colors duration-fast ${
-                      errors.name ? "border-red-300 focus:border-red-400" : "border-sand focus:border-teal"
+                      errors.name ? "border-red-300 focus:border-red-400" : "border-sand focus:border-green"
                     } focus:outline-none`}
                     placeholder="Enter your name"
                   />
@@ -136,7 +136,7 @@ const SignUp = () => {
                     onChange={handleChange}
                     aria-invalid={!!errors.email}
                     className={`w-full px-4 py-3 rounded-xl border bg-white text-espresso transition-colors duration-fast ${
-                      errors.email ? "border-red-300 focus:border-red-400" : "border-sand focus:border-teal"
+                      errors.email ? "border-red-300 focus:border-red-400" : "border-sand focus:border-green"
                     } focus:outline-none`}
                     placeholder="your@email.com"
                   />
@@ -157,7 +157,7 @@ const SignUp = () => {
                     maxLength={10}
                     aria-invalid={!!errors.phoneNumber}
                     className={`w-full px-4 py-3 rounded-xl border bg-white text-espresso transition-colors duration-fast ${
-                      errors.phoneNumber ? "border-red-300 focus:border-red-400" : "border-sand focus:border-teal"
+                      errors.phoneNumber ? "border-red-300 focus:border-red-400" : "border-sand focus:border-green"
                     } focus:outline-none`}
                     placeholder="10 digit number"
                   />
@@ -179,7 +179,7 @@ const SignUp = () => {
                     onChange={handleChange}
                     aria-invalid={!!errors.password}
                     className={`w-full px-4 py-3 rounded-xl border bg-white text-espresso transition-colors duration-fast ${
-                      errors.password ? "border-red-300 focus:border-red-400" : "border-sand focus:border-teal"
+                      errors.password ? "border-red-300 focus:border-red-400" : "border-sand focus:border-green"
                     } focus:outline-none`}
                     placeholder="••••••••"
                   />
@@ -196,7 +196,7 @@ const SignUp = () => {
                   type="submit"
                   disabled={isSubmitting}
                   className={`w-full py-3 px-4 rounded-xl font-semibold text-white transition-all duration-base ${
-                    isSubmitting ? "bg-teal/60 cursor-not-allowed" : "bg-espresso hover:bg-teal-dark"
+                    isSubmitting ? "bg-green/60 cursor-not-allowed" : "bg-espresso hover:bg-green-dark"
                   }`}
                 >
                   {isSubmitting ? "Creating account..." : "Sign up"}
@@ -207,7 +207,7 @@ const SignUp = () => {
 
           <p className="mt-6 text-center text-sm text-espresso/70">
             Already have an account?{" "}
-            <Link href="/signin" className="font-medium text-teal-dark hover:underline">
+            <Link href="/signin" className="font-medium text-green-dark hover:underline">
               Log in
             </Link>
           </p>

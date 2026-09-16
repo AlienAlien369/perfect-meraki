@@ -23,7 +23,7 @@ export const RoundedCTAButton: React.FC<RoundedCTAButtonProps> = ({
       type="button"
       onClick={handleClick}
       className={
-        "inline-block rounded-full bg-[#5db8a8] px-6 py-2 text-white font-semibold shadow-md border border-[#5db8a8]  hover:shadow-lg hover:bg-white hover:text-[#5db8a8] transition-all duration-300 hover:scale-105 active:scale-95"
+        "inline-block rounded-full bg-green px-6 py-2 text-white font-semibold shadow-md border border-green hover:shadow-lg hover:bg-white hover:text-green transition-all duration-base hover:scale-105 active:scale-95"
       }
     >
       {children}

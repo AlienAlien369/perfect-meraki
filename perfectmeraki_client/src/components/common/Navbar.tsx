@@ -113,7 +113,7 @@ export default function Navbar() {
                   <span className="block text-sm text-espresso transition-all duration-300 group-hover:-translate-y-full group-hover:opacity-0">
                     {l.name}
                   </span>
-                  <span className="absolute left-0 top-full text-sm text-teal transition-all duration-300 group-hover:top-0 group-hover:opacity-100 opacity-0">
+                  <span className="absolute left-0 top-full text-sm text-green transition-all duration-300 group-hover:top-0 group-hover:opacity-100 opacity-0">
                     {l.name}
                   </span>
                 </button>
@@ -131,7 +131,7 @@ export default function Navbar() {
                   </span>
                   <button
                     onClick={handleLogout}
-                    className="ml-3 px-3 py-1 rounded bg-sand text-espresso text-xs hover:bg-teal hover:text-white transition"
+                    className="ml-3 px-3 py-1 rounded bg-sand text-espresso text-xs hover:bg-green hover:text-white transition"
                   >
                     Log out
                   </button>
@@ -193,7 +193,7 @@ export default function Navbar() {
               <button
                 key={l.name}
                 onClick={() => navigate(l.href)}
-                className="hover:text-teal"
+                className="hover:text-green"
               >
                 {l.name}
               </button>
@@ -204,7 +204,7 @@ export default function Navbar() {
                 <span className="text-sm">Hi {userDetails.name}</span>
                 <button
                   onClick={handleLogout}
-                  className="px-4 py-1.5 rounded bg-sand text-espresso text-sm hover:bg-teal hover:text-white transition"
+                  className="px-4 py-1.5 rounded bg-sand text-espresso text-sm hover:bg-green hover:text-white transition"
                 >
                   Log out
                 </button>
@@ -213,7 +213,7 @@ export default function Navbar() {
 
             <button
               onClick={() => navigate(WHATS_APP_URL)}
-              className="mt-4 px-6 py-2 rounded-full bg-teal text-white"
+              className="mt-4 px-6 py-2 rounded-full bg-green text-white"
             >
               Order Now
             </button>
@@ -229,7 +229,7 @@ export default function Navbar() {
           {/* Close button */}
           <button
             onClick={() => setMenuOpen(false)}
-            className="absolute top-6 right-6 text-3xl leading-none text-espresso hover:text-teal"
+            className="absolute top-6 right-6 text-3xl leading-none text-espresso hover:text-green"
             aria-label="Close menu"
           >
             &times;

@@ -45,7 +45,7 @@ export default function Footer() {
               onClick={() => router.push("/")}
               className="flex items-center focus:outline-none"
             >
-              <span className="font-display text-2xl text-teal">Perfect Meraki</span>
+              <span className="font-display text-2xl text-green">Perfect Meraki</span>
             </button>
             <p className="text-white/60 text-sm leading-relaxed">
               Handcrafted resin and wood decor, made piece by piece with
@@ -55,21 +55,21 @@ export default function Footer() {
             <div className="flex space-x-4">
               <a
                 href="https://www.instagram.com/perfectmeraki?igsh=M3kzdGhubmE2MXRv"
-                className="text-white/60 hover:text-teal transition-colors duration-base"
+                className="text-white/60 hover:text-green transition-colors duration-base"
                 aria-label="Perfect Meraki on Instagram"
               >
                 <FaInstagram className="w-5 h-5" />
               </a>
               <a
                 href="https://wa.me/8860646364"
-                className="text-white/60 hover:text-teal transition-colors duration-base"
+                className="text-white/60 hover:text-green transition-colors duration-base"
                 aria-label="Chat with Perfect Meraki on WhatsApp"
               >
                 <FaWhatsapp className="w-5 h-5" />
               </a>
               <a
                 href="https://youtube.com/@perfectmerakii?si=aQbsG6Vgw_kLoBUa"
-                className="text-white/60 hover:text-teal transition-colors duration-base"
+                className="text-white/60 hover:text-green transition-colors duration-base"
                 aria-label="Perfect Meraki on YouTube"
               >
                 <FaYoutube className="w-5 h-5" />
@@ -85,7 +85,7 @@ export default function Footer() {
                 <li key={link.href}>
                   <button
                     onClick={() => router.push(link.href)}
-                    className="text-white/60 hover:text-teal transition-colors duration-base text-sm text-left w-full"
+                    className="text-white/60 hover:text-green transition-colors duration-base text-sm text-left w-full"
                   >
                     {link.label}
                   </button>
@@ -104,7 +104,7 @@ export default function Footer() {
                     onClick={() =>
                       router.push(`/workshops/${workshop.toLowerCase().replace(/\s+/g, "-")}`)
                     }
-                    className="text-white/60 hover:text-teal transition-colors duration-base text-sm text-left w-full capitalize"
+                    className="text-white/60 hover:text-green transition-colors duration-base text-sm text-left w-full capitalize"
                   >
                     {workshop}
                   </button>
@@ -123,7 +123,7 @@ export default function Footer() {
                     onClick={() =>
                       router.push(`/products/${product.toLowerCase().replace(/\s+/g, "-")}`)
                     }
-                    className="text-white/60 hover:text-teal transition-colors duration-base text-sm text-left w-full capitalize"
+                    className="text-white/60 hover:text-green transition-colors duration-base text-sm text-left w-full capitalize"
                   >
                     {product}
                   </button>
@@ -142,7 +142,7 @@ export default function Footer() {
               href="https://wa.link/k2vcjx"
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center gap-2 bg-teal text-espresso px-6 py-3 rounded-lg font-medium hover:bg-teal-dark hover:text-white transition-colors duration-base text-sm"
+              className="inline-flex items-center gap-2 bg-green text-espresso px-6 py-3 rounded-lg font-medium hover:bg-green-dark hover:text-white transition-colors duration-base text-sm"
             >
               <FaWhatsapp className="w-4 h-4" />
               Chat on WhatsApp
@@ -155,7 +155,7 @@ export default function Footer() {
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             <div className="flex items-center space-x-4">
               <div className="bg-white/10 p-3 rounded-full">
-                <IoCall className="w-5 h-5 text-teal" />
+                <IoCall className="w-5 h-5 text-green" />
               </div>
               <div>
                 <p className="text-white/60 text-sm">Call Us</p>
@@ -164,7 +164,7 @@ export default function Footer() {
             </div>
             <div className="flex items-center space-x-4">
               <div className="bg-white/10 p-3 rounded-full">
-                <MdEmail className="w-5 h-5 text-teal" />
+                <MdEmail className="w-5 h-5 text-green" />
               </div>
               <div>
                 <p className="text-white/60 text-sm">Email Us</p>
@@ -173,7 +173,7 @@ export default function Footer() {
             </div>
             <div className="flex items-center space-x-4">
               <div className="bg-white/10 p-3 rounded-full">
-                <IoLocationSharp className="w-5 h-5 text-teal" />
+                <IoLocationSharp className="w-5 h-5 text-green" />
               </div>
               <div>
                 <p className="text-white/60 text-sm">Visit Us</p>

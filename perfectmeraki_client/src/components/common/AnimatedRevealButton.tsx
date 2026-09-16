@@ -26,19 +26,19 @@ export const AnimatedRevealButton: React.FC<AnimatedRevealButtonProps> = ({
       type="button"
       onClick={handleClick}
       className={
-        "group relative inline-block overflow-hidden rounded-full border border-[#2d2926] bg-gradient-to-br from-[#a5f3eb] to-[#63ccbb] px-6 py-2 shadow-md transition-all duration-300 hover:scale-105 hover:shadow-xl active:scale-95 focus:outline-none focus:ring-2 focus:ring-[#2d2926] focus:ring-offset-2"
+        "group relative inline-block overflow-hidden rounded-full border border-espresso bg-gradient-to-br from-green-light to-green px-6 py-2 shadow-md transition-all duration-base hover:scale-105 hover:shadow-xl active:scale-95 focus:outline-none focus:ring-2 focus:ring-espresso focus:ring-offset-2"
       }
     >
       {/* Default font */}
       <span className="block transition-all duration-300 group-hover:-translate-y-full group-hover:opacity-0">
-        <span className="text-base font-semibold text-[#2d2926] font-sans">
+        <span className="text-base font-semibold text-espresso font-body">
           {children}
         </span>
       </span>
 
       {/* Hover font (customizable) */}
       <span className="absolute top-full pt-2 block transition-all duration-300 group-hover:top-0 group-hover:opacity-100 opacity-0">
-        <span className={"text-base font-semibold text-[#2d2926]"}>
+        <span className={"text-base font-semibold text-espresso"}>
           {children}
         </span>
       </span>
