@@ -1,12 +1,10 @@
-"use-client";
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import { motion } from "framer-motion";
-import { gsap } from "gsap";
-import { API_ROUTES } from "@/api/APIRoutes";
 import { useRouter } from "next/router";
-
-const generateOTP = () =>
-  Math.floor(100000 + Math.random() * 900000).toString();
+import Link from "next/link";
+import { API_ROUTES } from "@/api/APIRoutes";
+import apiClient from "@/api/apiClient";
+import { fadeInUp, fadeIn } from "@/lib/motion";
 
 const SignUp = () => {
   const router = useRouter();
@@ -20,81 +18,10 @@ const SignUp = () => {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
 
-  // Verification states
-  const [isEmailVerified, setIsEmailVerified] = useState(false);
-  const [isPhoneVerified, setIsPhoneVerified] = useState(false);
-
-  // OTP states
-  const [emailOTP, setEmailOTP] = useState("");
-  const [sentEmailOTP, setSentEmailOTP] = useState("");
-  const [emailOTPSent, setEmailOTPSent] = useState(false);
-  const [verifyingEmail, setVerifyingEmail] = useState(false);
-
-  const [phoneOTP, setPhoneOTP] = useState("");
-  const [sentPhoneOTP, setSentPhoneOTP] = useState("");
-  const [phoneOTPSent, setPhoneOTPSent] = useState(false);
-  const [verifyingPhone, setVerifyingPhone] = useState(false);
-
-  const containerRef = useRef<HTMLDivElement>(null);
-  const floatingShapesRef = useRef<(HTMLDivElement | null)[]>([]);
-
-  useEffect(() => {
-    let ScrollTrigger:
-      | typeof import("gsap/ScrollTrigger").ScrollTrigger
-      | undefined;
-
-    const registerAndAnimate = async () => {
-      if (typeof window !== "undefined") {
-        const mod = await import("gsap/ScrollTrigger");
-        ScrollTrigger = mod.ScrollTrigger;
-        gsap.registerPlugin(ScrollTrigger);
-
-        floatingShapesRef.current.forEach((shape, i) => {
-          if (shape) {
-            gsap.to(shape, {
-              y: i % 2 === 0 ? -15 : 15,
-              duration: 3 + i,
-              repeat: -1,
-              yoyo: true,
-              ease: "sine.inOut",
-            });
-          }
-        });
-
-        if (containerRef.current) {
-          gsap.to(containerRef.current, {
-            scrollTrigger: {
-              trigger: containerRef.current,
-              start: "top center",
-              toggleActions: "play none none none",
-            },
-            backgroundColor: "rgba(236, 253, 245, 0.9)",
-            duration: 2,
-          });
-        }
-      }
-    };
-
-    registerAndAnimate();
-  }, []);
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData({ ...formData, [name]: value });
-    if (errors[name]) {
-      setErrors({ ...errors, [name]: "" });
-    }
-    // Reset verification if email or phone changes
-    if (name === "email") {
-      setIsEmailVerified(false);
-      setEmailOTPSent(false);
-      setEmailOTP("");
-    }
-    if (name === "phoneNumber") {
-      setIsPhoneVerified(false);
-      setPhoneOTPSent(false);
-      setPhoneOTP("");
-    }
+    if (errors[name]) setErrors({ ...errors, [name]: "" });
   };
 
   const validateForm = () => {
@@ -117,488 +44,173 @@ const SignUp = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (validateForm() && isEmailVerified && isPhoneVerified) {
-      setIsSubmitting(true);
-      try {
-        const axios = (await import("axios")).default;
-        const response = await axios.post(
-          API_ROUTES.AUTH.REGISTER,
-          {
-            name: formData.name,
-            email: formData.email,
-            phoneNumber: formData.phoneNumber,
-            password: formData.password,
-          },
-          {
-            headers: {
-              "Content-Type": "application/json",
-            },
-          }
-        );
+    if (!validateForm()) return;
 
-        if (response.data && response.data.success) {
-          setSuccess(true);
-        } else {
-          setErrors({ general: "Registration failed. Please try again." });
-        }
-      } catch (error: unknown) {
-        setErrors({
-          general:
-            (error as { response?: { data?: { message?: string } } })?.response
-              ?.data?.message || "Network error. Please try again.",
-        });
-        console.error("Registration error:", error);
-        setIsSubmitting(false);
-      }
+    setIsSubmitting(true);
+    setErrors({});
+    try {
+      await apiClient.post(API_ROUTES.AUTH.REGISTER, formData);
+      setSuccess(true);
+    } catch (err: unknown) {
+      const message =
+        (err as { response?: { data?: { message?: string } } })?.response
+          ?.data?.message || "Something went wrong. Please try again.";
+      setErrors({ general: message });
+    } finally {
+      setIsSubmitting(false);
     }
   };
 
-  // Email OTP
-  const handleSendEmailOTP = () => {
-    setVerifyingEmail(true);
-    const otp = generateOTP();
-    setSentEmailOTP(otp);
-    setTimeout(() => {
-      setEmailOTPSent(true);
-      setVerifyingEmail(false);
-      alert(`Simulated: OTP sent to email: ${otp}`); // Replace with real API
-    }, 1000);
-  };
-
-  const handleVerifyEmailOTP = () => {
-    setVerifyingEmail(true);
-    setTimeout(() => {
-      if (emailOTP === sentEmailOTP) {
-        setIsEmailVerified(true);
-        setEmailOTPSent(false);
-      } else {
-        setErrors((prev) => ({
-          ...prev,
-          email: "Invalid OTP for email",
-        }));
-      }
-      setVerifyingEmail(false);
-    }, 1000);
-  };
-
-  // Phone OTP
-  const handleSendPhoneOTP = () => {
-    setVerifyingPhone(true);
-    const otp = generateOTP();
-    setSentPhoneOTP(otp);
-    setTimeout(() => {
-      setPhoneOTPSent(true);
-      setVerifyingPhone(false);
-      alert(`Simulated: OTP sent to phone: ${otp}`); // Replace with real API
-    }, 1000);
-  };
-
-  const handleVerifyPhoneOTP = () => {
-    setVerifyingPhone(true);
-    setTimeout(() => {
-      if (phoneOTP === sentPhoneOTP) {
-        setIsPhoneVerified(true);
-        setPhoneOTPSent(false);
-      } else {
-        setErrors((prev) => ({
-          ...prev,
-          phoneNumber: "Invalid OTP for phone",
-        }));
-      }
-      setVerifyingPhone(false);
-    }, 1000);
-  };
-
   return (
-    <div
-      ref={containerRef}
-      className="min-h-screen bg-gradient-to-br from-emerald-50 to-green-100 flex items-center justify-center p-4 overflow-hidden relative"
-    >
-      {[...Array(5)].map((_, i) => (
-        <div
-          key={i}
-          ref={(el) => {
-            floatingShapesRef.current[i] = el;
-          }}
-          className={`absolute hidden md:block ${
-            i % 2 === 0 ? "text-emerald-300" : "text-green-400"
-          }`}
-          style={{
-            top: `${10 + i * 15}%`,
-            left: i < 3 ? `${5 + i * 10}%` : "auto",
-            right: i >= 3 ? `${5 + (i - 3) * 10}%` : "auto",
-            fontSize: `${1.5 + i * 0.5}rem`,
-            opacity: 0.6,
-          }}
-        >
-          {i % 2 === 0 ? "🍃" : "✨"}
-        </div>
-      ))}
-
+    <div className="min-h-screen bg-sand-light flex items-center justify-center px-4 py-16">
       <motion.div
-        initial={{ opacity: 0, y: 20 }}
-        animate={{ opacity: 1, y: 0 }}
-        transition={{ duration: 0.8, ease: "easeOut" }}
-        className="w-full max-w-md relative z-10"
+        initial="hidden"
+        animate="visible"
+        variants={fadeInUp}
+        className="w-full max-w-md"
       >
-        <div className="bg-white/80 backdrop-blur-lg rounded-3xl shadow-2xl overflow-hidden border border-white/20">
-          <div className="p-8 sm:p-10">
-            <div className="text-center mb-8">
-              <motion.h1
-                initial={{ scale: 0.9 }}
-                animate={{ scale: 1 }}
-                transition={{ delay: 0.2 }}
-                className="text-3xl font-bold text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-green-800 mb-2"
-              >
-                Join Perfect Meraki
-              </motion.h1>
-              <p className="text-gray-600">
-                Create an account to unlock exclusive workshops & offers!
-              </p>
-            </div>
-
-            {success ? (
-              <motion.div
-                initial={{ scale: 0.8, opacity: 0 }}
-                animate={{ scale: 1, opacity: 1 }}
-                className="text-center p-6 rounded-xl bg-green-50 border border-green-200"
-              >
-                <div className="text-5xl mb-4">🎉</div>
-                <h3 className="text-xl font-bold text-green-800 mb-2">
-                  Welcome Aboard!
-                </h3>
-                <p className="text-green-600">
-                  Your account has been created successfully.
-                </p>
-                <motion.button
-                  whileHover={{ scale: 1.05 }}
-                  whileTap={{ scale: 0.95 }}
-                  className="mt-4 px-6 py-2 bg-green-600 text-white rounded-full font-medium"
-                  onClick={() => {
-                    // Use next/router to navigate to /signin
-                    router.push("/signin");
-                  }}
-                >
-                  Continue Exploring
-                </motion.button>
-              </motion.div>
-            ) : (
-              <form onSubmit={handleSubmit}>
-                <div className="space-y-5">
-                  <motion.div
-                    initial={{ x: -10, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ delay: 0.3 }}
-                  >
-                    <label
-                      htmlFor="name"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                      Full Name
-                    </label>
-                    <input
-                      type="text"
-                      id="name"
-                      name="name"
-                      value={formData.name}
-                      onChange={handleChange}
-                      className={`w-full px-4 py-3 rounded-xl border ${
-                        errors.name
-                          ? "border-red-300 focus:ring-red-500"
-                          : "border-gray-300 focus:ring-emerald-500"
-                      } focus:outline-none focus:ring-2 transition`}
-                      placeholder="Enter your name"
-                    />
-                    {errors.name && (
-                      <motion.p
-                        initial={{ opacity: 0, y: -5 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="mt-1 text-sm text-red-600"
-                      >
-                        {errors.name}
-                      </motion.p>
-                    )}
-                  </motion.div>
-
-                  {/* Email with OTP */}
-                  <motion.div
-                    initial={{ x: -10, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ delay: 0.4 }}
-                  >
-                    <label
-                      htmlFor="email"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                      Email Address
-                    </label>
-                    <div className="flex gap-2">
-                      <input
-                        type="email"
-                        id="email"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        className={`w-full px-4 py-3 rounded-xl border ${
-                          errors.email
-                            ? "border-red-300 focus:ring-red-500"
-                            : "border-gray-300 focus:ring-emerald-500"
-                        } focus:outline-none focus:ring-2 transition`}
-                        placeholder="your@email.com"
-                        disabled={isEmailVerified}
-                      />
-                      {!isEmailVerified && !emailOTPSent && (
-                        <button
-                          type="button"
-                          onClick={handleSendEmailOTP}
-                          disabled={
-                            verifyingEmail ||
-                            !formData.email ||
-                            !!errors.email ||
-                            isEmailVerified
-                          }
-                          className="px-3 py-2 rounded-lg bg-emerald-500 text-white text-xs font-semibold disabled:bg-gray-300"
-                        >
-                          {verifyingEmail ? "Sending..." : "Send OTP"}
-                        </button>
-                      )}
-                      {isEmailVerified && (
-                        <span className="text-green-600 font-bold px-2 py-2">
-                          ✔
-                        </span>
-                      )}
-                    </div>
-                    {emailOTPSent && !isEmailVerified && (
-                      <div className="flex gap-2 mt-2">
-                        <input
-                          type="text"
-                          value={emailOTP}
-                          onChange={(e) => setEmailOTP(e.target.value)}
-                          maxLength={6}
-                          className="w-32 px-3 py-2 rounded-lg border border-gray-300 focus:ring-emerald-500 focus:outline-none focus:ring-2 transition"
-                          placeholder="Enter OTP"
-                        />
-                        <button
-                          type="button"
-                          onClick={handleVerifyEmailOTP}
-                          disabled={verifyingEmail || !emailOTP}
-                          className="px-3 py-2 rounded-lg bg-emerald-500 text-white text-xs font-semibold disabled:bg-gray-300"
-                        >
-                          {verifyingEmail ? "Verifying..." : "Verify OTP"}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={handleSendEmailOTP}
-                          disabled={verifyingEmail}
-                          className="px-3 py-2 rounded-lg bg-gray-200 text-xs font-semibold"
-                        >
-                          Resend
-                        </button>
-                      </div>
-                    )}
-                    {errors.email && (
-                      <motion.p
-                        initial={{ opacity: 0, y: -5 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="mt-1 text-sm text-red-600"
-                      >
-                        {errors.email}
-                      </motion.p>
-                    )}
-                  </motion.div>
-
-                  {/* Phone with OTP */}
-                  <motion.div
-                    initial={{ x: -10, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ delay: 0.45 }}
-                  >
-                    <label
-                      htmlFor="phoneNumber"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                      Phone Number
-                    </label>
-                    <div className="flex gap-2">
-                      <input
-                        type="tel"
-                        id="phoneNumber"
-                        name="phoneNumber"
-                        value={formData.phoneNumber}
-                        onChange={handleChange}
-                        className={`w-full px-4 py-3 rounded-xl border ${
-                          errors.phoneNumber
-                            ? "border-red-300 focus:ring-red-500"
-                            : "border-gray-300 focus:ring-emerald-500"
-                        } focus:outline-none focus:ring-2 transition`}
-                        placeholder="Enter 10 digit number"
-                        disabled={isPhoneVerified}
-                        maxLength={10}
-                      />
-                      {!isPhoneVerified && !phoneOTPSent && (
-                        <button
-                          type="button"
-                          onClick={handleSendPhoneOTP}
-                          disabled={
-                            verifyingPhone ||
-                            !formData.phoneNumber ||
-                            !!errors.phoneNumber ||
-                            isPhoneVerified
-                          }
-                          className="px-3 py-2 rounded-lg bg-emerald-500 text-white text-xs font-semibold disabled:bg-gray-300"
-                        >
-                          {verifyingPhone ? "Sending..." : "Send OTP"}
-                        </button>
-                      )}
-                      {isPhoneVerified && (
-                        <span className="text-green-600 font-bold px-2 py-2">
-                          ✔
-                        </span>
-                      )}
-                    </div>
-                    {phoneOTPSent && !isPhoneVerified && (
-                      <div className="flex gap-2 mt-2">
-                        <input
-                          type="text"
-                          value={phoneOTP}
-                          onChange={(e) => setPhoneOTP(e.target.value)}
-                          maxLength={6}
-                          className="w-32 px-3 py-2 rounded-lg border border-gray-300 focus:ring-emerald-500 focus:outline-none focus:ring-2 transition"
-                          placeholder="Enter OTP"
-                        />
-                        <button
-                          type="button"
-                          onClick={handleVerifyPhoneOTP}
-                          disabled={verifyingPhone || !phoneOTP}
-                          className="px-3 py-2 rounded-lg bg-emerald-500 text-white text-xs font-semibold disabled:bg-gray-300"
-                        >
-                          {verifyingPhone ? "Verifying..." : "Verify OTP"}
-                        </button>
-                        <button
-                          type="button"
-                          onClick={handleSendPhoneOTP}
-                          disabled={verifyingPhone}
-                          className="px-3 py-2 rounded-lg bg-gray-200 text-xs font-semibold"
-                        >
-                          Resend
-                        </button>
-                      </div>
-                    )}
-                    {errors.phoneNumber && (
-                      <motion.p
-                        initial={{ opacity: 0, y: -5 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="mt-1 text-sm text-red-600"
-                      >
-                        {errors.phoneNumber}
-                      </motion.p>
-                    )}
-                  </motion.div>
-
-                  <motion.div
-                    initial={{ x: -10, opacity: 0 }}
-                    animate={{ x: 0, opacity: 1 }}
-                    transition={{ delay: 0.5 }}
-                  >
-                    <label
-                      htmlFor="password"
-                      className="block text-sm font-medium text-gray-700 mb-1"
-                    >
-                      Password
-                    </label>
-                    <input
-                      type="password"
-                      id="password"
-                      name="password"
-                      value={formData.password}
-                      onChange={handleChange}
-                      className={`w-full px-4 py-3 rounded-xl border ${
-                        errors.password
-                          ? "border-red-300 focus:ring-red-500"
-                          : "border-gray-300 focus:ring-emerald-500"
-                      } focus:outline-none focus:ring-2 transition`}
-                      placeholder="••••••••"
-                    />
-                    {errors.password && (
-                      <motion.p
-                        initial={{ opacity: 0, y: -5 }}
-                        animate={{ opacity: 1, y: 0 }}
-                        className="mt-1 text-sm text-red-600"
-                      >
-                        {errors.password}
-                      </motion.p>
-                    )}
-                  </motion.div>
-
-                  <motion.div
-                    initial={{ opacity: 0 }}
-                    animate={{ opacity: 1 }}
-                    transition={{ delay: 0.8 }}
-                  >
-                    <motion.button
-                      whileHover={{ scale: 1.02 }}
-                      whileTap={{ scale: 0.98 }}
-                      type="submit"
-                      disabled={
-                        isSubmitting || !isEmailVerified || !isPhoneVerified
-                      }
-                      className={`w-full py-3 px-4 rounded-xl font-bold text-white ${
-                        isSubmitting || !isEmailVerified || !isPhoneVerified
-                          ? "bg-emerald-400 cursor-not-allowed"
-                          : "bg-gradient-to-r from-emerald-500 to-green-600 hover:shadow-lg"
-                      } transition-all shadow-md`}
-                    >
-                      {isSubmitting ? (
-                        <span className="flex items-center justify-center">
-                          <svg
-                            className="animate-spin -ml-1 mr-2 h-4 w-4 text-white"
-                            xmlns="http://www.w3.org/2000/svg"
-                            fill="none"
-                            viewBox="0 0 24 24"
-                          >
-                            <circle
-                              className="opacity-25"
-                              cx="12"
-                              cy="12"
-                              r="10"
-                              stroke="currentColor"
-                              strokeWidth="4"
-                            ></circle>
-                            <path
-                              className="opacity-75"
-                              fill="currentColor"
-                              d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
-                            ></path>
-                          </svg>
-                          Creating Account...
-                        </span>
-                      ) : (
-                        "Sign Up Now"
-                      )}
-                    </motion.button>
-                  </motion.div>
-                </div>
-              </form>
-            )}
-            <motion.div
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              transition={{ delay: 1 }}
-              className="mt-6 text-center text-sm text-gray-600"
-            >
-              Already have an account?{" "}
-              <a
-                href="#"
-                className="font-medium text-emerald-600 hover:text-emerald-500"
-                onClick={(e) => {
-                  e.preventDefault();
-                  router.push("/signin");
-                }}
-              >
-                Log in
-              </a>
-            </motion.div>
+        <div className="bg-white rounded-2xl shadow-xl border border-sand p-8 sm:p-10">
+          <div className="text-center mb-8">
+            <h1 className="font-display text-3xl text-espresso mb-2">
+              Join Perfect Meraki
+            </h1>
+            <p className="text-espresso/60 text-sm">
+              Create an account for exclusive workshops and offers
+            </p>
           </div>
+
+          {success ? (
+            <motion.div
+              initial="hidden"
+              animate="visible"
+              variants={fadeIn}
+              className="text-center p-6 rounded-xl bg-teal/10 border border-teal/30"
+              role="status"
+            >
+              <h3 className="font-display text-xl text-espresso mb-1">
+                Welcome aboard
+              </h3>
+              <p className="text-espresso/70 text-sm mb-4">
+                Your account has been created. Sign in to continue.
+              </p>
+              <button
+                onClick={() => router.push("/signin")}
+                className="px-6 py-2 bg-espresso text-white rounded-full font-medium hover:bg-teal-dark transition-colors duration-base"
+              >
+                Go to sign in
+              </button>
+            </motion.div>
+          ) : (
+            <form onSubmit={handleSubmit} noValidate>
+              <div className="space-y-5">
+                <div>
+                  <label htmlFor="name" className="block text-sm font-medium text-espresso mb-1">
+                    Full name
+                  </label>
+                  <input
+                    type="text"
+                    id="name"
+                    name="name"
+                    autoComplete="name"
+                    value={formData.name}
+                    onChange={handleChange}
+                    aria-invalid={!!errors.name}
+                    className={`w-full px-4 py-3 rounded-xl border bg-white text-espresso transition-colors duration-fast ${
+                      errors.name ? "border-red-300 focus:border-red-400" : "border-sand focus:border-teal"
+                    } focus:outline-none`}
+                    placeholder="Enter your name"
+                  />
+                  {errors.name && <p className="mt-1 text-sm text-red-600">{errors.name}</p>}
+                </div>
+
+                <div>
+                  <label htmlFor="email" className="block text-sm font-medium text-espresso mb-1">
+                    Email address
+                  </label>
+                  <input
+                    type="email"
+                    id="email"
+                    name="email"
+                    autoComplete="email"
+                    value={formData.email}
+                    onChange={handleChange}
+                    aria-invalid={!!errors.email}
+                    className={`w-full px-4 py-3 rounded-xl border bg-white text-espresso transition-colors duration-fast ${
+                      errors.email ? "border-red-300 focus:border-red-400" : "border-sand focus:border-teal"
+                    } focus:outline-none`}
+                    placeholder="your@email.com"
+                  />
+                  {errors.email && <p className="mt-1 text-sm text-red-600">{errors.email}</p>}
+                </div>
+
+                <div>
+                  <label htmlFor="phoneNumber" className="block text-sm font-medium text-espresso mb-1">
+                    Phone number
+                  </label>
+                  <input
+                    type="tel"
+                    id="phoneNumber"
+                    name="phoneNumber"
+                    autoComplete="tel"
+                    value={formData.phoneNumber}
+                    onChange={handleChange}
+                    maxLength={10}
+                    aria-invalid={!!errors.phoneNumber}
+                    className={`w-full px-4 py-3 rounded-xl border bg-white text-espresso transition-colors duration-fast ${
+                      errors.phoneNumber ? "border-red-300 focus:border-red-400" : "border-sand focus:border-teal"
+                    } focus:outline-none`}
+                    placeholder="10 digit number"
+                  />
+                  {errors.phoneNumber && (
+                    <p className="mt-1 text-sm text-red-600">{errors.phoneNumber}</p>
+                  )}
+                </div>
+
+                <div>
+                  <label htmlFor="password" className="block text-sm font-medium text-espresso mb-1">
+                    Password
+                  </label>
+                  <input
+                    type="password"
+                    id="password"
+                    name="password"
+                    autoComplete="new-password"
+                    value={formData.password}
+                    onChange={handleChange}
+                    aria-invalid={!!errors.password}
+                    className={`w-full px-4 py-3 rounded-xl border bg-white text-espresso transition-colors duration-fast ${
+                      errors.password ? "border-red-300 focus:border-red-400" : "border-sand focus:border-teal"
+                    } focus:outline-none`}
+                    placeholder="••••••••"
+                  />
+                  {errors.password && <p className="mt-1 text-sm text-red-600">{errors.password}</p>}
+                </div>
+
+                {errors.general && (
+                  <p className="text-sm text-red-600 text-center" role="alert">
+                    {errors.general}
+                  </p>
+                )}
+
+                <button
+                  type="submit"
+                  disabled={isSubmitting}
+                  className={`w-full py-3 px-4 rounded-xl font-semibold text-white transition-all duration-base ${
+                    isSubmitting ? "bg-teal/60 cursor-not-allowed" : "bg-espresso hover:bg-teal-dark"
+                  }`}
+                >
+                  {isSubmitting ? "Creating account..." : "Sign up"}
+                </button>
+              </div>
+            </form>
+          )}
+
+          <p className="mt-6 text-center text-sm text-espresso/70">
+            Already have an account?{" "}
+            <Link href="/signin" className="font-medium text-teal-dark hover:underline">
+              Log in
+            </Link>
+          </p>
         </div>
       </motion.div>
     </div>

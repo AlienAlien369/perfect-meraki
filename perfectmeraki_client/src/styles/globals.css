@@ -1,24 +1,60 @@
 @import "tailwindcss";
+
 /*
-  :root {
-    --background: #ffffff;
-    --foreground: #171717;
-  }
+  Design tokens for Perfect Meraki.
 
-  @theme inline {
-    --color-background: var(--background);
-    --color-foreground: var(--foreground);
-    --font-sans: var(--font-geist-sans);
-    --font-mono: var(--font-geist-mono);
-  }
+  Brand: espresso (near-black), teal (accent), sand (warm neutral) - craft &
+  warmth, handmade positioning. Two fonts only: Fraunces (display, warm serif
+  with real character) paired with Inter (text, neutral and highly legible)
+  so the serif reads as intentional rather than decorative.
 
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --background: #0a0a0a;
-      --foreground: #ededed;
-    }
-  }
+  --font-display / --font-body are set as CSS variables by next/font in
+  _app.tsx; declaring them here just wires them into Tailwind's theme so
+  `font-display` / `font-body` utilities work everywhere.
+*/
+@theme {
+  --color-espresso: #2d2926;
+  --color-teal: #63ccbb;
+  --color-teal-dark: #4aa896;
+  --color-sand: #e0d6c5;
+  --color-sand-light: #f3ede1;
 
+  --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
+  --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;
+
+  /* Motion language - one easing curve, three durations. Used via the
+     matching Tailwind utilities (duration-*, ease-brand) and mirrored as
+     JS constants in src/lib/motion.ts for Framer Motion. */
+  --ease-brand: cubic-bezier(0.22, 1, 0.36, 1);
+  --duration-fast: 150ms;
+  --duration-base: 250ms;
+  --duration-slow: 450ms;
+}
+
+@layer base {
   body {
-    font-family: Arial, Helvetica, sans-serif;
-  } */
+    @apply bg-white text-espresso font-body;
+  }
+  h1, h2, h3, h4 {
+    @apply font-display;
+  }
+  ::selection {
+    background-color: var(--color-teal);
+    color: white;
+  }
+  /* Visible, brand-colored focus ring everywhere - never remove outline
+     without a replacement (keyboard nav must stay legible). */
+  :focus-visible {
+    outline: 2px solid var(--color-teal-dark);
+    outline-offset: 2px;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}

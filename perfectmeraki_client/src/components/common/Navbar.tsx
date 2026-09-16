@@ -8,6 +8,8 @@ import { AnimatedRevealButton } from "./AnimatedRevealButton";
 import { signOut } from "@/store/slices/authSlice";
 import { clearUser } from "@/store/slices/userSlice";
 import { useAuthHydrated } from "@/store/useAuthHydrated";
+import apiClient from "@/api/apiClient";
+import { API_ROUTES } from "@/api/APIRoutes";
 
 // 1️⃣  Static links
 const navLinks = [
@@ -64,6 +66,10 @@ export default function Navbar() {
   });
 
   const handleLogout = () => {
+    // Fire-and-forget: clears the httpOnly refresh cookie server-side. Local
+    // sign-out below doesn't wait on it - a slow/failed network call should
+    // never block the user from leaving their account state.
+    apiClient.post(API_ROUTES.AUTH.LOGOUT).catch(() => {});
     dispatch(signOut());
     dispatch(clearUser());
     router.push("/signin");
@@ -78,7 +84,7 @@ export default function Navbar() {
 
   return (
     <>
-      <nav className="w-full sticky top-0 z-40 bg-white border-b border-[#e0d6c5]">
+      <nav className="w-full sticky top-0 z-40 bg-white border-b border-sand">
         <div className="mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-20">
             {/* Logo */}
@@ -104,28 +110,28 @@ export default function Navbar() {
                   onClick={() => navigate(l.href)}
                   className="group relative px-1 py-1"
                 >
-                  <span className="block text-sm text-[#2d2926] transition-all duration-300 group-hover:-translate-y-full group-hover:opacity-0">
+                  <span className="block text-sm text-espresso transition-all duration-300 group-hover:-translate-y-full group-hover:opacity-0">
                     {l.name}
                   </span>
-                  <span className="absolute left-0 top-full text-sm text-[#63ccbb] transition-all duration-300 group-hover:top-0 group-hover:opacity-100 opacity-0">
+                  <span className="absolute left-0 top-full text-sm text-teal transition-all duration-300 group-hover:top-0 group-hover:opacity-100 opacity-0">
                     {l.name}
                   </span>
                 </button>
               ))}
               {!showAuthState && (
                 <span
-                  className="w-24 h-4 rounded bg-[#e0d6c5]/50 animate-pulse"
+                  className="w-24 h-4 rounded bg-sand/50 animate-pulse"
                   aria-hidden="true"
                 />
               )}
               {showAuthState && isAuthenticated && userDetails?.name && (
                 <>
-                  <span className="text-sm text-[#2d2926] transition-opacity duration-300">
+                  <span className="text-sm text-espresso transition-opacity duration-300">
                     Hi {userDetails.name}
                   </span>
                   <button
                     onClick={handleLogout}
-                    className="ml-3 px-3 py-1 rounded bg-[#e0d6c5] text-[#2d2926] text-xs hover:bg-[#63ccbb] hover:text-white transition"
+                    className="ml-3 px-3 py-1 rounded bg-sand text-espresso text-xs hover:bg-teal hover:text-white transition"
                   >
                     Log out
                   </button>
@@ -139,7 +145,7 @@ export default function Navbar() {
               {/* Help button */}
               <button
                 onClick={() => navigate(WHATS_APP_HELP_URL)}
-                className="text-2xl rounded-full w-10 h-10 border border-[#2d2926] flex items-center justify-center bg-white hover:bg-[#e0d6c5] transition"
+                className="text-2xl rounded-full w-10 h-10 border border-espresso flex items-center justify-center bg-white hover:bg-sand transition"
                 aria-label="Need help?"
               >
                 ?
@@ -150,23 +156,23 @@ export default function Navbar() {
             <div className="lg:hidden flex items-center">
               <button
                 onClick={() => setMenuOpen(!menuOpen)}
-                className="p-2 rounded-md text-[#2d2926] focus:outline-none"
+                className="p-2 rounded-md text-espresso focus:outline-none"
                 aria-label="Toggle menu"
               >
                 <span className="sr-only">Open menu</span>
                 <div className="w-6 h-5 flex flex-col justify-around">
                   <span
-                    className={`h-0.5 bg-[#2d2926] transition-all ${
+                    className={`h-0.5 bg-espresso transition-all ${
                       menuOpen ? "rotate-45 translate-y-1.5" : ""
                     }`}
                   />
                   <span
-                    className={`h-0.5 bg-[#2d2926] transition-all ${
+                    className={`h-0.5 bg-espresso transition-all ${
                       menuOpen ? "opacity-0" : ""
                     }`}
                   />
                   <span
-                    className={`h-0.5 bg-[#2d2926] transition-all ${
+                    className={`h-0.5 bg-espresso transition-all ${
                       menuOpen ? "-rotate-45 -translate-y-1.5" : ""
                     }`}
                   />
@@ -187,7 +193,7 @@ export default function Navbar() {
               <button
                 key={l.name}
                 onClick={() => navigate(l.href)}
-                className="hover:text-[#63ccbb]"
+                className="hover:text-teal"
               >
                 {l.name}
               </button>
@@ -198,7 +204,7 @@ export default function Navbar() {
                 <span className="text-sm">Hi {userDetails.name}</span>
                 <button
                   onClick={handleLogout}
-                  className="px-4 py-1.5 rounded bg-[#e0d6c5] text-[#2d2926] text-sm hover:bg-[#63ccbb] hover:text-white transition"
+                  className="px-4 py-1.5 rounded bg-sand text-espresso text-sm hover:bg-teal hover:text-white transition"
                 >
                   Log out
                 </button>
@@ -207,14 +213,14 @@ export default function Navbar() {
 
             <button
               onClick={() => navigate(WHATS_APP_URL)}
-              className="mt-4 px-6 py-2 rounded-full bg-[#63ccbb] text-white"
+              className="mt-4 px-6 py-2 rounded-full bg-teal text-white"
             >
               Order Now
             </button>
 
             <button
               onClick={() => navigate(WHATS_APP_HELP_URL)}
-              className="mt-2 w-10 h-10 rounded-full border border-[#2d2926] flex items-center justify-center"
+              className="mt-2 w-10 h-10 rounded-full border border-espresso flex items-center justify-center"
             >
               ?
             </button>
@@ -223,7 +229,7 @@ export default function Navbar() {
           {/* Close button */}
           <button
             onClick={() => setMenuOpen(false)}
-            className="absolute top-6 right-6 text-3xl leading-none text-[#2d2926] hover:text-[#63ccbb]"
+            className="absolute top-6 right-6 text-3xl leading-none text-espresso hover:text-teal"
             aria-label="Close menu"
           >
             &times;
