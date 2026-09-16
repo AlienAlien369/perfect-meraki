@@ -8,15 +8,16 @@ export const API_ROUTES = {
       `${BASE_URL}/api/users/getUserById/${userId}`,
   },
   PRODUCTS: {
-    EDIT: (productId: string) => `${BASE_URL}/api/admin/edit/${productId}`,
+    EDIT: (productId: string) => `${BASE_URL}/api/admin/editProduct/${productId}`,
     ADD: `${BASE_URL}/api/admin/createProduct`,
-    DELETE: (productId: string) => `${BASE_URL}/api/admin/delete/${productId}`,
+    DELETE: (productId: string) =>
+      `${BASE_URL}/api/admin/deleteProduct/${productId}`,
     GET_BY_TYPE: `${BASE_URL}/api/admin/getProductsByType`,
   },
   WORKSHOPS: {
     ADD: `${BASE_URL}/api/admin/createWorkshop`,
     DELETE: (workshopId: string) =>
-      `${BASE_URL}/api/admin/delete/${workshopId}`,
+      `${BASE_URL}/api/admin/deleteWorkshop/${workshopId}`,
     EDIT: (workshopId: string) =>
       `${BASE_URL}/api/admin/updateWorkshop/${workshopId}`,
     GET_BY_TYPE: (workshop_type?: string) =>
@@ -27,6 +28,8 @@ export const API_ROUTES = {
   AUTH: {
     LOGIN: `${BASE_URL}/api/auth/login`,
     REGISTER: `${BASE_URL}/api/auth/register`,
+    REFRESH: `${BASE_URL}/api/auth/refresh`,
+    LOGOUT: `${BASE_URL}/api/auth/logout`,
   },
   CATALOGUE: {
     GET_BY_NAME: `${BASE_URL}/api/admin/getLinksByName`,

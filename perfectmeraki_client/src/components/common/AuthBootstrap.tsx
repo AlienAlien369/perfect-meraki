@@ -4,11 +4,13 @@ import { useAuthHydrated } from "@/store/useAuthHydrated";
 import { signOut } from "@/store/slices/authSlice";
 import { clearUser } from "@/store/slices/userSlice";
 import { isTokenExpired } from "@/lib/jwt";
+import { refreshAccessToken } from "@/api/apiClient";
 
 /**
- * Runs once rehydration completes: if the persisted token has already expired,
- * sign the user out immediately instead of showing an "authenticated" UI backed
- * by a dead token that will only fail on the next request. Renders nothing.
+ * Runs once rehydration completes. The access token is short-lived (15m) by
+ * design, so on most page loads it will look expired here - that's expected,
+ * not an error: try the httpOnly refresh cookie first, and only sign the user
+ * out if that also fails (refresh cookie itself expired/invalid/revoked).
  */
 export default function AuthBootstrap() {
   const hydrated = useAuthHydrated();
@@ -18,10 +20,18 @@ export default function AuthBootstrap() {
 
   useEffect(() => {
     if (!hydrated || !isAuthenticated) return;
-    if (isTokenExpired(token)) {
+    if (!isTokenExpired(token)) return;
+
+    let cancelled = false;
+    refreshAccessToken().catch(() => {
+      if (cancelled) return;
       dispatch(signOut());
       dispatch(clearUser());
-    }
+    });
+
+    return () => {
+      cancelled = true;
+    };
   }, [hydrated, isAuthenticated, token, dispatch]);
 
   return null;

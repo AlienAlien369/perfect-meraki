@@ -30,8 +30,12 @@ const authSlice = createSlice({
       state.token = null;
       state.userDetails = null;
     },
+    // Swaps in a freshly-refreshed access token without touching userDetails.
+    setToken(state, action: PayloadAction<string>) {
+      state.token = action.payload;
+    },
   },
 });
 
-export const { signIn, signOut } = authSlice.actions;
+export const { signIn, signOut, setToken } = authSlice.actions;
 export default authSlice.reducer;
