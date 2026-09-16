@@ -1,4 +1,5 @@
 const multer = require("multer");
+const crypto = require("crypto");
 const { CloudinaryStorage } = require("multer-storage-cloudinary");
 const cloudinary = require("cloudinary").v2;
 
@@ -15,7 +16,9 @@ const storage = new CloudinaryStorage({
   params: {
     folder: "ProductsPhotos", // Folder name in Cloudinary
     allowed_formats: ["jpeg", "jpg", "png"], // Allowed file formats
-    public_id: (req, file) => `${Date.now()}${file.originalname}`, // Unique file name
+    // Random id, not the uploader's original filename - avoids leaking
+    // whatever PII an admin's local filename might contain into a public URL.
+    public_id: () => crypto.randomBytes(16).toString("hex"),
   },
 });
 
@@ -33,6 +36,10 @@ const fileFilter = (req, file, cb) => {
 };
 
 // Configure multer with Cloudinary storage
-const upload = multer({ storage, fileFilter });
+const upload = multer({
+  storage,
+  fileFilter,
+  limits: { fileSize: 5 * 1024 * 1024 }, // 5MB per file
+});
 
 module.exports = upload;

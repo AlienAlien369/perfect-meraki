@@ -1,86 +1,66 @@
 const User = require("../models/User");
+const Product = require("../models/Product");
+const Workshop = require("../models/Workshop");
+const { asyncHandler, AppError } = require("../middleware/errorHandler");
 
 // Get user dashboard data
-const getUserDashboardData = async (req, res) => {
-  try {
-    const totalProspects = await Prospect.countDocuments();
-    const prospectsWithCallResultNull = await Prospect.countDocuments({
-      Call_Result: null,
-    });
-    const prospectsWithCallResultCallback = await Prospect.countDocuments({
-      Call_Result: "Call Back",
-    });
-    const prospectsWithOpenBadge = await Prospect.countDocuments({
-      Badge_Status: "Open",
-    });
-    const prospectsWithPermanentBadge = await Prospect.countDocuments({
-      Badge_Status: "Permanent",
-    });
-    const prospectsWithElderlyBadge = await Prospect.countDocuments({
-      Badge_Status: "Elderly",
-    });
-    const prospectsWithGenderFemale = await Prospect.countDocuments({
-      Gender: "Female",
-    });
-    const prospectsWithGenderMale = await Prospect.countDocuments({
-      Gender: "Male",
-    });
+const getUserDashboardData = asyncHandler(async (req, res) => {
+  const [totalProducts, totalWorkshops, totalUsers] = await Promise.all([
+    Product.countDocuments(),
+    Workshop.countDocuments(),
+    User.countDocuments({ role: "user" }),
+  ]);
 
-    res.status(200).json({
-      success: true,
-      data: {
-        totalProspects,
-        prospectsWithCallResultNull,
-        prospectsWithCallResultCallback,
-        prospectsWithOpenBadge,
-        prospectsWithPermanentBadge,
-        prospectsWithElderlyBadge,
-        prospectsWithGenderFemale,
-        prospectsWithGenderMale,
-      },
-    });
-  } catch (error) {
-    console.error("Error fetching dashboard data:", error);
-    res.status(500).json({ success: false, message: "Server error" });
-  }
-};
+  res.status(200).json({
+    success: true,
+    data: { totalProducts, totalWorkshops, totalUsers },
+  });
+});
 
-// Get all users
-const getAllUsers = async (req, res) => {
-  try {
+// Get all users - supports optional ?page=&limit= pagination; omitting both
+// keeps the original "return everything" behavior existing callers rely on.
+const getAllUsers = asyncHandler(async (req, res) => {
+  const { page, limit } = req.query;
+
+  if (!page && !limit) {
     const users = await User.find({ role: "user" }).select("-password");
-
-    res.status(200).json({
-      success: true,
-      data: users,
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
+    return res.status(200).json({ success: true, data: users });
   }
-};
+
+  const pageNum = Math.max(parseInt(page, 10) || 1, 1);
+  const limitNum = Math.min(Math.max(parseInt(limit, 10) || 20, 1), 100);
+
+  const [users, total] = await Promise.all([
+    User.find({ role: "user" })
+      .select("-password")
+      .skip((pageNum - 1) * limitNum)
+      .limit(limitNum),
+    User.countDocuments({ role: "user" }),
+  ]);
+
+  res.status(200).json({
+    success: true,
+    data: users,
+    meta: { page: pageNum, limit: limitNum, total, pages: Math.ceil(total / limitNum) },
+  });
+});
 
 // Delete user
-const deleteUser = async (req, res) => {
-  try {
-    const user = await User.findByIdAndDelete(req.params.id);
-    if (!user) {
-      return res.status(404).json({ message: "User not found" });
-    }
-
-    if (user.role !== "user") {
-      return res.status(400).json({ message: "User is not an user" });
-    }
-
-    res.status(200).json({
-      success: true,
-      message: "User removed successfully",
-    });
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Server error" });
+const deleteUser = asyncHandler(async (req, res) => {
+  const user = await User.findByIdAndDelete(req.params.id);
+  if (!user) {
+    throw new AppError("User not found", 404);
   }
-};
+
+  if (user.role !== "user") {
+    throw new AppError("User is not a user", 400);
+  }
+
+  res.status(200).json({
+    success: true,
+    message: "User removed successfully",
+  });
+});
 
 module.exports = {
   getUserDashboardData,
