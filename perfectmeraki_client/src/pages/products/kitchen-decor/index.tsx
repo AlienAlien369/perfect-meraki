@@ -1,8 +1,6 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { motion, AnimatePresence } from "framer-motion";
-import { useSelector } from "react-redux";
-import { RootState } from "@/store/store";
 import ProductCard from "@/components/common/ProductCard";
 import { FiAlertCircle, FiLoader } from "react-icons/fi";
 import { API_ROUTES } from "@/api/APIRoutes";
@@ -39,7 +37,6 @@ const KitchenDecorPage: React.FC = () => {
   const [products, setProducts] = useState<Product[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const token = useSelector((state: RootState) => state.auth.token);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -52,7 +49,6 @@ const KitchenDecorPage: React.FC = () => {
           {
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
             },
           }
         );
@@ -64,10 +60,8 @@ const KitchenDecorPage: React.FC = () => {
       }
     };
 
-    if (token) {
-      fetchProducts();
-    }
-  }, [token]);
+    fetchProducts();
+  }, []);
 
   return (
     <div className="min-h-screen bg-gradient-to-b from-gray-50 to-white py-12 px-4 sm:px-6 lg:px-8">

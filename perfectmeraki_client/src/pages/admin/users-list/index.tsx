@@ -165,7 +165,6 @@ const UserDetails = () => {
                     <button
                       onClick={() => {
                         // Handle delete action here
-                        const token = localStorage.getItem("token");
                         axios
                           .delete(API_ROUTES.USERS.DELETE(user.id), {
                             headers: {

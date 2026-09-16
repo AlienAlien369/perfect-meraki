@@ -1,12 +1,9 @@
 import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { API_ROUTES } from "@/api/APIRoutes"; // Adjust the path as needed
-import { RootState } from "@/store/store";
-import { useSelector } from "react-redux";
 
 const ProductPage = () => {
   const [link, setLink] = useState<string | "">("");
-  const token = useSelector((state: RootState) => state.auth.token);
 
   useEffect(() => {
     const fetchLink = async () => {
@@ -17,7 +14,6 @@ const ProductPage = () => {
             params: { name: "flipbook" }, // query params
             headers: {
               "Content-Type": "application/json",
-              Authorization: `Bearer ${token}`,
             },
           }
         );
@@ -31,7 +27,7 @@ const ProductPage = () => {
     };
 
     fetchLink();
-  }, [token]);
+  }, []);
 
   // if (!link) return <div>Loading...</div>;
 

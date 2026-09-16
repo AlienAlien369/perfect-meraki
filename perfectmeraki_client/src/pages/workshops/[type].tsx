@@ -5,8 +5,6 @@ import Image from "next/image";
 import axios from "axios";
 import paintingLoader from "../../../public/assets/gifs/paint_loader.gif";
 import { API_ROUTES } from "@/api/APIRoutes";
-import { useSelector } from "react-redux";
-import type { RootState } from "@/store/store";
 import { FiArrowLeft, FiArrowRight  } from "react-icons/fi";
 import { FaWhatsapp  } from "react-icons/fa";
 
@@ -28,7 +26,6 @@ export default function WorkshopTypePage() {
   const [loading, setLoading] = useState(true);
   const [currentSlide, setCurrentSlide] = useState(0);
   const sliderRef = useRef<HTMLDivElement>(null);
-  const token = useSelector((state: RootState) => state.auth.token);
 
   useEffect(() => {
     if (!router.isReady) return;
@@ -38,9 +35,7 @@ export default function WorkshopTypePage() {
         const url = type
           ? `${API_ROUTES.WORKSHOPS.GET_BY_TYPE(type as string)}`
           : `${API_ROUTES.WORKSHOPS.GET_BY_TYPE()}`;
-        const response = await axios.get(url, {
-          headers: { Authorization: `Bearer ${token}` },
-        });
+        const response = await axios.get(url);
         setWorkshops(response.data.data || []);
       } catch (err) {
         console.error("Error fetching workshops:", err);
@@ -50,7 +45,7 @@ export default function WorkshopTypePage() {
     };
 
     fetchData();
-  }, [type, router.isReady, token]);
+  }, [type, router.isReady]);
 
   const nextSlide = () => {
     if (currentSlide < workshops.length - 1) {
