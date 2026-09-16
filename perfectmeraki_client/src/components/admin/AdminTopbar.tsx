@@ -1,7 +1,8 @@
 import React from "react";
 import { useRouter } from "next/router";
+import Link from "next/link";
 import { useDispatch } from "react-redux";
-import { FiMenu, FiLogOut } from "react-icons/fi";
+import { FiMenu, FiLogOut, FiExternalLink } from "react-icons/fi";
 import { useAppSelector } from "@/store/hooks";
 import { signOut } from "@/store/slices/authSlice";
 import { clearUser } from "@/store/slices/userSlice";
@@ -36,12 +37,19 @@ const AdminTopbar: React.FC<AdminTopbarProps> = ({ onMenuClick }) => {
         >
           <FiMenu className="w-5 h-5" />
         </button>
-        <span className="font-display text-lg text-espresso hidden sm:block">
+        <Link href="/" className="font-display text-lg text-espresso hidden sm:block hover:text-green-dark transition-colors duration-fast">
           Perfect Meraki <span className="text-green">Admin</span>
-        </span>
+        </Link>
       </div>
 
       <div className="flex items-center gap-4">
+        <Link
+          href="/"
+          className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-sm font-medium text-espresso border border-sand hover:bg-sand-light transition-colors duration-fast"
+        >
+          <FiExternalLink className="w-4 h-4" />
+          <span className="hidden sm:inline">View site</span>
+        </Link>
         <div className="flex items-center gap-2">
           <div className="w-8 h-8 rounded-full bg-green text-white flex items-center justify-center text-sm font-semibold">
             {initial}
