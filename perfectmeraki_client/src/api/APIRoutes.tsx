@@ -7,6 +7,13 @@ export const API_ROUTES = {
     GET_BY_ID: (userId: string) =>
       `${BASE_URL}/api/users/getUserById/${userId}`,
   },
+  ADMIN_USERS: {
+    LIST: `${BASE_URL}/api/admin/users`,
+    CREATE: `${BASE_URL}/api/admin/users`,
+    UPDATE: (userId: string) => `${BASE_URL}/api/admin/users/${userId}`,
+    DELETE: (userId: string) => `${BASE_URL}/api/admin/users/${userId}`,
+  },
+  DASHBOARD: `${BASE_URL}/api/admin/getAdminDashboardData`,
   PRODUCTS: {
     EDIT: (productId: string) => `${BASE_URL}/api/admin/editProduct/${productId}`,
     ADD: `${BASE_URL}/api/admin/createProduct`,
