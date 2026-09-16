@@ -15,11 +15,11 @@
 */
 @theme {
   --color-espresso: #2d2926;
-  --color-green: #227a53;
-  --color-green-dark: #175c3e;
-  --color-green-light: #eaf5ee;
+  --color-green: #059669;
+  --color-green-dark: #047857;
+  --color-green-light: #ecfdf5;
   --color-sand: #e0d6c5;
-  --color-sand-light: #f3ede1;
+  --color-sand-light: #fffdf8;
 
   --font-display: var(--font-fraunces), ui-serif, Georgia, serif;
   --font-body: var(--font-inter), ui-sans-serif, system-ui, sans-serif;

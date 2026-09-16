@@ -95,7 +95,7 @@ const SignUp = () => {
               </p>
               <button
                 onClick={() => router.push("/signin")}
-                className="px-6 py-2 bg-espresso text-white rounded-full font-medium hover:bg-green-dark transition-colors duration-base"
+                className="px-6 py-2 bg-green text-white rounded-full font-medium hover:bg-green-dark transition-colors duration-base"
               >
                 Go to sign in
               </button>
@@ -196,7 +196,7 @@ const SignUp = () => {
                   type="submit"
                   disabled={isSubmitting}
                   className={`w-full py-3 px-4 rounded-xl font-semibold text-white transition-all duration-base ${
-                    isSubmitting ? "bg-green/60 cursor-not-allowed" : "bg-espresso hover:bg-green-dark"
+                    isSubmitting ? "bg-green/60 cursor-not-allowed" : "bg-green hover:bg-green-dark"
                   }`}
                 >
                   {isSubmitting ? "Creating account..." : "Sign up"}

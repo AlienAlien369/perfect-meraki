@@ -207,7 +207,7 @@ const SignIn = () => {
                   className={`w-full py-3 px-4 rounded-xl font-semibold text-white transition-all duration-base ${
                     isSubmitting
                       ? "bg-green/60 cursor-not-allowed"
-                      : "bg-espresso hover:bg-green-dark"
+                      : "bg-green hover:bg-green-dark"
                   }`}
                 >
                   {isSubmitting ? "Signing in..." : "Sign in"}
