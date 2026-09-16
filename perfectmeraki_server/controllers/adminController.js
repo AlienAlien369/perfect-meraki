@@ -50,6 +50,97 @@ const getAdminDashboardData = asyncHandler(async (req, res) => {
   });
 });
 
+// Unified user management (any role) - powers the admin Users page.
+const getAllUsersManaged = asyncHandler(async (req, res) => {
+  const { role, search, page, limit } = req.query;
+  const filter = {};
+  if (role === "user" || role === "admin") filter.role = role;
+  if (search) {
+    filter.$or = [
+      { name: { $regex: search, $options: "i" } },
+      { email: { $regex: search, $options: "i" } },
+    ];
+  }
+
+  const pageNum = Math.max(parseInt(page, 10) || 1, 1);
+  const limitNum = Math.min(Math.max(parseInt(limit, 10) || 50, 1), 200);
+
+  const [users, total] = await Promise.all([
+    User.find(filter)
+      .select("-password")
+      .sort({ createdAt: -1 })
+      .skip((pageNum - 1) * limitNum)
+      .limit(limitNum),
+    User.countDocuments(filter),
+  ]);
+
+  res.status(200).json({
+    success: true,
+    data: users,
+    meta: { page: pageNum, limit: limitNum, total, pages: Math.ceil(total / limitNum) },
+  });
+});
+
+const createUserManaged = asyncHandler(async (req, res) => {
+  const { name, email, phoneNumber, password, role } = req.body;
+
+  const exists = await User.findOne({ email });
+  if (exists) {
+    throw new AppError("A user with this email already exists", 400);
+  }
+
+  const user = await User.create({ name, email, phoneNumber, password, role });
+
+  res.status(201).json({
+    success: true,
+    data: {
+      id: user._id,
+      name: user.name,
+      email: user.email,
+      phoneNumber: user.phoneNumber,
+      role: user.role,
+    },
+  });
+});
+
+const updateUserManaged = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  if (!mongoose.Types.ObjectId.isValid(id)) {
+    throw new AppError("Invalid user ID", 400);
+  }
+
+  const updateFields = {};
+  ["name", "email", "phoneNumber", "role"].forEach((field) => {
+    if (req.body[field] !== undefined) updateFields[field] = req.body[field];
+  });
+
+  const updatedUser = await User.findByIdAndUpdate(
+    id,
+    { $set: updateFields },
+    { new: true, runValidators: true }
+  ).select("-password");
+
+  if (!updatedUser) {
+    throw new AppError("User not found", 404);
+  }
+
+  res.status(200).json({ success: true, data: updatedUser });
+});
+
+const deleteUserManaged = asyncHandler(async (req, res) => {
+  const { id } = req.params;
+  if (req.user.id === id) {
+    throw new AppError("You cannot delete your own account", 400);
+  }
+
+  const deletedUser = await User.findByIdAndDelete(id);
+  if (!deletedUser) {
+    throw new AppError("User not found", 404);
+  }
+
+  res.status(200).json({ success: true, message: "User removed successfully" });
+});
+
 // Create admin
 const createAdmin = asyncHandler(async (req, res) => {
   const { name, email, phoneNumber, password, BatchNumber } = req.body;
@@ -412,6 +503,10 @@ const deleteWorkshop = asyncHandler(async (req, res) => {
 
 module.exports = {
   getAdminDashboardData,
+  getAllUsersManaged,
+  createUserManaged,
+  updateUserManaged,
+  deleteUserManaged,
   createAdmin,
   getAllAdmins,
   deleteAdmin,

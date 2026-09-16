@@ -2,6 +2,10 @@ const express = require("express");
 const router = express.Router();
 const {
   getAdminDashboardData,
+  getAllUsersManaged,
+  createUserManaged,
+  updateUserManaged,
+  deleteUserManaged,
   createAdmin,
   getAllAdmins,
   deleteAdmin,
@@ -19,6 +23,8 @@ const {
   deleteWorkshop,
 } = require("../controllers/adminController");
 const { protect, authorize } = require("../middleware/auth");
+const { validateBody } = require("../middleware/validate");
+const { adminCreateUserSchema, adminUpdateUserSchema } = require("../schemas/authSchemas");
 const uploadPhotoMiddleware = require("../middleware/uploadPhotoMiddleware");
 
 // Routes
@@ -28,6 +34,25 @@ router.get(
   authorize("admin"),
   getAdminDashboardData
 );
+
+// Unified user management (any role) - powers the admin Users page
+router.get("/users", protect, authorize("admin"), getAllUsersManaged);
+router.post(
+  "/users",
+  protect,
+  authorize("admin"),
+  validateBody(adminCreateUserSchema),
+  createUserManaged
+);
+router.put(
+  "/users/:id",
+  protect,
+  authorize("admin"),
+  validateBody(adminUpdateUserSchema),
+  updateUserManaged
+);
+router.delete("/users/:id", protect, authorize("admin"), deleteUserManaged);
+
 router.post("/create", protect, authorize("admin"), createAdmin);
 router.get("/getAllAdmins", protect, authorize("admin"), getAllAdmins);
 router.delete("/delete/:id", protect, authorize("admin"), deleteAdmin);
