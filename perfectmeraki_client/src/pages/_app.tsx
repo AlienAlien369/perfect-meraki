@@ -8,6 +8,7 @@ import Navbar from "@/components/common/Navbar";
 import Footer from "@/components/common/Footer";
 import AdminLayout from "@/layout/AdminLayout";
 import AuthBootstrap from "@/components/common/AuthBootstrap";
+import RouteProgress from "@/components/common/RouteProgress";
 import "@/styles/globals.css";
 
 const fraunces = Fraunces({
@@ -29,6 +30,7 @@ export default function App({ Component, pageProps }: AppProps) {
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <AuthBootstrap />
+        <RouteProgress />
         <div className={`${fraunces.variable} ${inter.variable}`}>
           {isAdminRoute ? (
             <AdminLayout>

@@ -3,10 +3,10 @@ import { useRouter } from "next/router";
 import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import axios from "axios";
-import paintingLoader from "../../../public/assets/gifs/paint_loader.gif";
 import { API_ROUTES } from "@/api/APIRoutes";
 import { FiArrowLeft, FiArrowRight  } from "react-icons/fi";
 import { FaWhatsapp  } from "react-icons/fa";
+import Spinner from "@/components/common/Spinner";
 
 
 interface Workshop {
@@ -82,14 +82,8 @@ export default function WorkshopTypePage() {
 
   if (loading) {
     return (
-      <div className="flex justify-center items-center min-h-[70vh] bg-emerald-50">
-        <Image
-          src={paintingLoader.src}
-          width={80}
-          height={80}
-          alt="Loading..."
-          className="opacity-90"
-        />
+      <div className="flex justify-center items-center min-h-[70vh] bg-sand-light">
+        <Spinner size={40} label="Loading workshop..." />
       </div>
     );
   }
