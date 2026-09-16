@@ -77,7 +77,7 @@ export default function WorkshopTypePage() {
   const handleWhatsAppClick = (workshopName: string) => {
     const message = `Hi, I'm interested in booking the ${workshopName} workshop. Can you provide more details?`;
     const encodedMessage = encodeURIComponent(message);
-    window.open(`https://wa.me/?text=${encodedMessage}`, "_blank");
+    window.open(`https://wa.me/918860646364?text=${encodedMessage}`, "_blank");
   };
 
   if (loading) {
@@ -89,22 +89,22 @@ export default function WorkshopTypePage() {
   }
 
   return (
-    <div className="min-h-screen bg-emerald-50 py-12 px-4 sm:px-6 lg:px-8">
+    <div className="min-h-screen bg-sand-light py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-7xl mx-auto">
-        <h1 className="text-4xl font-bold text-emerald-800 mb-8 capitalize text-center">
+        <h1 className="font-display text-4xl text-espresso mb-8 capitalize text-center">
           {type ? `${type} Workshops` : "All Workshops"}
         </h1>
 
         {workshops.length === 0 ? (
-          <div className="text-center py-20 bg-white rounded-xl shadow-lg">
-            <p className="text-xl text-emerald-700">No workshops found.</p>
+          <div className="text-center py-20 bg-white rounded-2xl shadow-sm border border-sand">
+            <p className="text-xl text-espresso/60">No workshops found.</p>
           </div>
         ) : (
           <div className="space-y-16">
             {workshops.map((workshop) => (
               <div
                 key={workshop._id}
-                className="bg-white rounded-2xl shadow-xl overflow-hidden transition-all duration-300 hover:shadow-2xl"
+                className="bg-white rounded-2xl shadow-sm border border-sand overflow-hidden transition-shadow duration-base hover:shadow-lg"
               >
                 {/* Image Slider */}
                 <div className="relative h-80 sm:h-96 w-full overflow-hidden">
@@ -135,17 +135,17 @@ export default function WorkshopTypePage() {
                   {/* Navigation Arrows */}
                   <button
                     onClick={prevSlide}
-                    className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-md hover:bg-white transition-all"
+                    className="absolute left-4 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-md hover:bg-white transition-colors duration-fast"
                   >
-                    <FiArrowLeft className="text-emerald-700 text-xl" />
+                    <FiArrowLeft className="text-espresso text-xl" />
                   </button>
                   <button
                     onClick={nextSlide}
-                    className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-md hover:bg-white transition-all"
+                    className="absolute right-4 top-1/2 -translate-y-1/2 bg-white/80 p-2 rounded-full shadow-md hover:bg-white transition-colors duration-fast"
                   >
-                    <FiArrowRight className="text-emerald-700 text-xl" />
+                    <FiArrowRight className="text-espresso text-xl" />
                   </button>
-                  
+
                   {/* Slide Indicators */}
                   <div className="absolute bottom-4 left-1/2 -translate-x-1/2 flex space-x-2">
                     {[workshop.image1, workshop.image2, workshop.image3].map(
@@ -156,7 +156,7 @@ export default function WorkshopTypePage() {
                           onClick={() => setCurrentSlide(idx)}
                           className={`w-3 h-3 rounded-full transition-all ${
                             currentSlide === idx
-                              ? "bg-emerald-600 w-6"
+                              ? "bg-green w-6"
                               : "bg-white/80"
                           }`}
                         />
@@ -168,15 +168,15 @@ export default function WorkshopTypePage() {
                 {/* Workshop Content */}
                 <div className="p-8">
                   <div className="mb-6">
-                    <span className="inline-block px-3 py-1 bg-emerald-100 text-emerald-800 rounded-full text-sm font-medium">
+                    <span className="inline-block px-3 py-1 bg-green-light text-green-dark rounded-full text-sm font-medium capitalize">
                       {workshop.type}
                     </span>
-                    <h2 className="mt-3 text-3xl font-bold text-emerald-900">
+                    <h2 className="mt-3 font-display text-3xl text-espresso">
                       {workshop.name}
                     </h2>
                   </div>
 
-                  <div className="prose max-w-none text-emerald-800 mb-8">
+                  <div className="prose max-w-none text-espresso/70 mb-8">
                     {workshop.description.split('\n').map((paragraph, i) => (
                       <p key={i} className="mb-4">{paragraph}</p>
                     ))}
@@ -185,14 +185,14 @@ export default function WorkshopTypePage() {
                   <div className="flex flex-wrap gap-4">
                     <button
                       onClick={() => handleWhatsAppClick(workshop.name)}
-                      className="flex items-center justify-center gap-2 px-6 py-3 bg-emerald-600 hover:bg-emerald-700 text-white font-medium rounded-full transition-all shadow-md hover:shadow-lg"
+                      className="flex items-center justify-center gap-2 px-6 py-3 bg-green hover:bg-green-dark text-white font-medium rounded-full transition-colors duration-base shadow-md hover:shadow-lg"
                     >
                       <FaWhatsapp  className="text-xl" />
                       Book via WhatsApp
                     </button>
                     <button
                       onClick={() => handleWhatsAppClick(workshop.name)}
-                      className="flex items-center justify-center gap-2 px-6 py-3 bg-white border border-emerald-600 text-emerald-700 font-medium rounded-full transition-all shadow-md hover:shadow-lg hover:bg-emerald-50"
+                      className="flex items-center justify-center gap-2 px-6 py-3 bg-white border border-green text-green-dark font-medium rounded-full transition-colors duration-base shadow-md hover:shadow-lg hover:bg-green-light"
                     >
                       Enquire Now
                     </button>

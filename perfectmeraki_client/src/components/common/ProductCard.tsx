@@ -76,10 +76,10 @@ const ProductCard: React.FC<ProductCardProps> = ({
       whileHover={{ scale: 1.02 }}
       onHoverStart={handleHover}
       onHoverEnd={handleHoverEnd}
-      className="max-w-s bg-white rounded-2xl shadow-lg overflow-hidden font-sans border border-gray-100 relative group transition-all duration-300 hover:shadow-xl"
+      className="max-w-s bg-white rounded-2xl shadow-sm overflow-hidden font-body border border-sand relative group transition-shadow duration-base hover:shadow-lg"
     >
       {/* Ribbon for discount */}
-      <div className="absolute -right-8 -top-4 bg-black text-white text-xs font-bold px-8 py-1 transform rotate-45 z-10 shadow-md">
+      <div className="absolute -right-8 -top-4 bg-espresso text-white text-xs font-bold px-8 py-1 transform rotate-45 z-10 shadow-md">
         {Math.round(((originalPrice - discountedPrice) / originalPrice) * 100)}%
         OFF
       </div>
@@ -97,18 +97,18 @@ const ProductCard: React.FC<ProductCardProps> = ({
 
       <div className="p-5">
         {/* Product type */}
-        <h3 className="text-xl font-bold text-gray-800 mb-1">{name}</h3>
-        <h2 className="text-xl font-bold text-gray-800 mb-1">{type}</h2>
+        <h3 className="font-display text-xl text-espresso mb-1">{name}</h3>
+        <p className="text-xs uppercase tracking-wide text-green-dark font-medium mb-2">{type}</p>
 
         {/* Description */}
-        <p className="text-sm text-gray-600 mb-4 min-h-[40px]">{description}</p>
+        <p className="text-sm text-espresso/60 mb-4 min-h-[40px]">{description}</p>
 
         {/* Price */}
         <div ref={priceRef} className="flex items-center gap-3 mb-4">
-          <span className="text-2xl font-bold text-gray-900">
+          <span className="text-2xl font-bold text-espresso">
             ₹{discountedPrice}
           </span>
-          <span className="line-through text-gray-400 text-sm">
+          <span className="line-through text-espresso/40 text-sm">
             ₹{originalPrice}
           </span>
         </div>

@@ -2,35 +2,19 @@ import React from "react";
 import Link from "next/link";
 
 const Custom404: React.FC = () => (
-  <div
-    style={{
-      minHeight: "100vh",
-      display: "flex",
-      flexDirection: "column",
-      alignItems: "center",
-      justifyContent: "center",
-      background: "#f8fafc",
-      color: "#1e293b",
-      textAlign: "center",
-    }}
-  >
-    <h1 style={{ fontSize: "6rem", margin: 0 }}>404</h1>
-    <h2 style={{ fontSize: "2rem", margin: "1rem 0" }}>Page Not Found</h2>
-    <p>The page you are looking for does not exist.</p>
-    <Link href="/">
-      <a
-        style={{
-          marginTop: "2rem",
-          padding: "0.75rem 1.5rem",
-          background: "#2563eb",
-          color: "#fff",
-          borderRadius: "0.375rem",
-          textDecoration: "none",
-          fontWeight: 500,
-        }}
-      >
-        Go back home
-      </a>
+  <div className="min-h-screen flex flex-col items-center justify-center bg-sand-light text-center px-4">
+    <p className="font-display text-7xl md:text-8xl text-green mb-2">404</p>
+    <h1 className="font-display text-2xl md:text-3xl text-espresso mb-2">
+      Page not found
+    </h1>
+    <p className="text-espresso/60 mb-8 max-w-sm">
+      The page you&apos;re looking for doesn&apos;t exist or may have moved.
+    </p>
+    <Link
+      href="/"
+      className="px-6 py-3 rounded-full bg-green text-white font-semibold hover:bg-green-dark transition-colors duration-base"
+    >
+      Go back home
     </Link>
   </div>
 );

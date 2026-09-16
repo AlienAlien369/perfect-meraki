@@ -2,6 +2,7 @@ import React, { useEffect } from "react";
 import { useRouter } from "next/router";
 import { useAppSelector } from "@/store/hooks";
 import { useAuthHydrated } from "@/store/useAuthHydrated";
+import Spinner from "./Spinner";
 
 interface RequireAdminProps {
   children: React.ReactNode;
@@ -30,8 +31,8 @@ const RequireAdmin: React.FC<RequireAdminProps> = ({ children }) => {
 
   if (!hydrated || !isAdmin) {
     return (
-      <div className="flex items-center justify-center min-h-[60vh]">
-        <div className="w-8 h-8 rounded-full border-2 border-[#e0d6c5] border-t-[#63ccbb] animate-spin" />
+      <div className="flex items-center justify-center min-h-[60vh] bg-sand-light">
+        <Spinner size={32} />
       </div>
     );
   }
